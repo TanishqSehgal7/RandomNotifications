@@ -30,26 +30,28 @@ public class MainActivity extends AppCompatActivity {
         Button fireAlarm= findViewById(R.id.FireAlarm);
         TextView alarmTriggerTime=findViewById(R.id.AlarmTimne);
 
-        fireAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // fire alarm using alarm manager
+//        fireAlarm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // fire alarm using alarm manager
                 CreateNotificationChannel();
                 if (FireRandomAlarm()) {
                     Intent intent= new Intent(getApplicationContext(), MyBroadcastReceiver.class);
                     PendingIntent pendingIntent= PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
                     alarmManager.cancel(pendingIntent);
                 }
-            }
-        });
         System.out.println(GetRandomTimeSlots(2*60*60*1000));
     }
 
     public boolean FireRandomAlarm() {
+
+        long notificationTime=GetRandomTimeSlots(7*60*60*1000);
+
         alarmManager= (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent= new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pendingIntent= PendingIntent.getActivity(this, 0, intent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),AlarmManager.INTERVAL_HALF_DAY,pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+notificationTime,pendingIntent);
+        Log.d("Random Notification" , String.valueOf(notificationTime));
         return true;
     }
 
@@ -79,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
             for(int i=0;i<numberOFNotifications;++i) {
                 randomTime=(int) (Math.random() * blockSize);
                 timeAtWhichNotificationAppears= i*blockSize + randomTime;
-                System.out.println("Notification sent at: " + timeAtWhichNotificationAppears);
             }
 
         } else if(timeTillSignOutReminder>4*60*60*1000 && timeTillSignOutReminder<=8*60*60*1000) {
@@ -90,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
             for(int i=0;i<numberOFNotifications;++i) {
                 randomTime=(int) (Math.random() * blockSize);
                 timeAtWhichNotificationAppears= i*blockSize + randomTime;
-                System.out.println("Notification sent at: " + timeAtWhichNotificationAppears);
             }
 
         } else if(timeTillSignOutReminder>8*60*60*1000) {
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i <numberOFNotifications; ++i) {
                 randomTime = (int) (Math.random() * blockSize);
                 timeAtWhichNotificationAppears = i * blockSize + randomTime;
-                System.out.println("Notification sent at: " + timeAtWhichNotificationAppears);
             }
         }
         return timeAtWhichNotificationAppears;
