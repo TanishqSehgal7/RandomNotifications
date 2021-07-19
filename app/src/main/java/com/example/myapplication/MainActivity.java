@@ -46,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean FireRandomAlarm() {
-//        calendar = Calendar.getInstance();
-//        long randomTime=GetRandomTimeSlots(2*60*60*1000);
-//        calendar.setTimeInMillis(randomTime);
         alarmManager= (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent= new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pendingIntent= PendingIntent.getActivity(this, 0, intent, 0);
@@ -68,43 +65,46 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static long GetRandomTimeSlots(long timeTillSignInReminder) {
+    public static long GetRandomTimeSlots(long timeTillSignOutReminder) {
 
+        long timeAtWhichNotificationAppears=0;
+
+        System.out.println(timeTillSignOutReminder);
         long randomTime=0;
 
-        if(timeTillSignInReminder>0 && timeTillSignInReminder<=4*60*60*1000) {
+        if(timeTillSignOutReminder>0 && timeTillSignOutReminder<=4*60*60*1000) {
 
-            randomTime=(long)Math.random()*timeTillSignInReminder;
-            Log.d("Random Notification", String.valueOf(randomTime));
-        }
+            int numberOFNotifications=1;
+            long blockSize= timeTillSignOutReminder/numberOFNotifications;
+            for(int i=0;i<numberOFNotifications;++i) {
+                randomTime=(int) (Math.random() * blockSize);
+                timeAtWhichNotificationAppears= i*blockSize + randomTime;
+                System.out.println("Notification sent at: " + timeAtWhichNotificationAppears);
+            }
 
-        else if(timeTillSignInReminder>4*60*60*1000 && timeTillSignInReminder<=8*60*60*1000) {
+        } else if(timeTillSignOutReminder>4*60*60*1000 && timeTillSignOutReminder<=8*60*60*1000) {
 
-            long mid=timeTillSignInReminder/2;
-            // time between first half of the time till sign in reminder
-            for(long i=0;i<=timeTillSignInReminder;i+=mid) {
-                randomTime =i+ (long) (Math.random() * mid);
-                Log.d("Random Notification", String.valueOf(randomTime));
-                if(mid<(float)timeTillSignInReminder/2) {
-                    randomTime =i+ (long) (Math.random() * (timeTillSignInReminder-mid));
-                    Log.d("Random Notification", String.valueOf(randomTime));
-                }
+            int numberOFNotifications=2;
+            long blockSize=timeTillSignOutReminder/numberOFNotifications;
+
+            for(int i=0;i<numberOFNotifications;++i) {
+                randomTime=(int) (Math.random() * blockSize);
+                timeAtWhichNotificationAppears= i*blockSize + randomTime;
+                System.out.println("Notification sent at: " + timeAtWhichNotificationAppears);
+            }
+
+        } else if(timeTillSignOutReminder>8*60*60*1000) {
+
+            int numberOFNotifications = 3;
+            long blockSize = timeTillSignOutReminder / numberOFNotifications;
+            for (int i = 0; i <numberOFNotifications; ++i) {
+                randomTime = (int) (Math.random() * blockSize);
+                timeAtWhichNotificationAppears = i * blockSize + randomTime;
+                System.out.println("Notification sent at: " + timeAtWhichNotificationAppears);
             }
         }
-
-        else if(timeTillSignInReminder>8*60*60*1000) {
-            long slotOfNotification=timeTillSignInReminder/3;
-
-            for(long i=0;i<timeTillSignInReminder;i+=slotOfNotification) {
-                randomTime = i + ((long) Math.random() * slotOfNotification);
-                Log.d("Random Notification", String.valueOf(randomTime));
-                if (slotOfNotification < (float) timeTillSignInReminder / 3) {
-                    randomTime = i + ((long) Math.random() * (timeTillSignInReminder / 3));
-                    Log.d("Random Notification", String.valueOf(randomTime));
-                }
-            }
-        }
-        return randomTime;
+        return timeAtWhichNotificationAppears;
     }
+
 
 }
