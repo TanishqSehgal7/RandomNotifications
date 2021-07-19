@@ -10,7 +10,7 @@ import android.graphics.Color;
 import androidx.core.app.NotificationBuilderWithBuilderAccessor;
 import androidx.core.app.NotificationCompat;
 
-public class BroadcastReceiver extends android.content.BroadcastReceiver {
+public class MyBroadcastReceiver extends android.content.BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // create notification builder with pending intent
